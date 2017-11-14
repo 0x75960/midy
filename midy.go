@@ -1,6 +1,9 @@
 package midy
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 // RegexValidMd5 for judge
 var RegexValidMd5 = regexp.MustCompile(
@@ -15,6 +18,11 @@ var RegexValidSha1 = regexp.MustCompile(
 // RegexValidSha256 for judge
 var RegexValidSha256 = regexp.MustCompile(
 	`^([[:xdigit:]]{64})$`,
+)
+
+// RegexSomethingHash string
+var RegexSomethingHash = regexp.MustCompile(
+	`[[:^xdigit:]]([[:xdigit:]]{32}|[[:xdigit:]]{40}|[[:xdigit:]]{64})[[:^xdigit:]]`,
 )
 
 // HashType to judge
@@ -51,6 +59,16 @@ func DetectHashType(s string) (h HashType) {
 
 	default:
 
+	}
+
+	return
+}
+
+// ScrapeHashStrings from specified string
+func ScrapeHashStrings(s string) (hashes []string) {
+	sm := RegexSomethingHash.FindAllStringSubmatch(s, -1)
+	for _, m := range sm {
+		hashes = append(hashes, strings.ToLower(m[1]))
 	}
 
 	return

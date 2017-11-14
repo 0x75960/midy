@@ -93,3 +93,35 @@ func TestDetectHashType(t *testing.T) {
 		})
 	}
 }
+
+func TestScrapeHashStrings(t *testing.T) {
+	target:=`
+	d41d8cd98f00b204e9800998ecf8427e
+	z3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+	DA39A3EE5E6B4B0D3255BFEF95601890AFD80709
+	<sha256>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</sha256>
+	`
+
+	scraped := ScrapeHashStrings(target)
+
+	if len(scraped) != 3 {
+		t.Errorf("expected 3 items. but got %d", len(scraped))
+	}
+
+	for _, s := range scraped {
+
+		if "d41d8cd98f00b204e9800998ecf8427e" == s {
+			continue
+		}
+
+		if "da39a3ee5e6b4b0d3255bfef95601890afd80709" == s {
+			continue
+		}
+
+		if "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" == s {
+			continue
+		}
+
+		t.Errorf("not expected %s", s)
+	}
+}
