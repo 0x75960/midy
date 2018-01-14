@@ -73,3 +73,20 @@ func ScrapeHashStrings(s string) (hashes []string) {
 
 	return
 }
+
+// EmptyHash check.
+func EmptyHash(s string) (yes bool) {
+
+	// see https://www.virustotal.com/#/file/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855/details
+
+	switch strings.ToLower(s) {
+	case "d41d8cd98f00b204e9800998ecf8427e": // md5 empty
+		fallthrough
+	case "da39a3ee5e6b4b0d3255bfef95601890afd80709": // sha1 empty
+		fallthrough
+	case "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855": // sha256 empty
+		return true
+	}
+
+	return
+}

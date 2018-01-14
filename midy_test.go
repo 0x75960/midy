@@ -95,7 +95,7 @@ func TestDetectHashType(t *testing.T) {
 }
 
 func TestScrapeHashStrings(t *testing.T) {
-	target:=`
+	target := `
 	d41d8cd98f00b204e9800998ecf8427e
 	z3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 	DA39A3EE5E6B4B0D3255BFEF95601890AFD80709
@@ -123,5 +123,79 @@ func TestScrapeHashStrings(t *testing.T) {
 		}
 
 		t.Errorf("not expected %s", s)
+	}
+}
+func TestEmptyHash(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantYes bool
+	}{
+		{
+			name: "case1: valid empty md5 lower",
+			args: args{
+				s: "d41d8cd98f00b204e9800998ecf8427e",
+			},
+			wantYes: true,
+		},
+		{
+			name: "case2: valid empty md5 upper",
+			args: args{
+				s: "D41D8CD98F00B204E9800998ECF8427E",
+			},
+			wantYes: true,
+		},
+		{
+			name: "case3: valid empty sha1 lower",
+			args: args{
+				s: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+			},
+			wantYes: true,
+		},
+		{
+			name: "case4: valid empty sha1 upper",
+			args: args{
+				s: "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709",
+			},
+			wantYes: true,
+		},
+		{
+			name: "case5: valid empty sha256 lower",
+			args: args{
+				s: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+			},
+			wantYes: true,
+		},
+		{
+			name: "case6: valid empty sha256 lower",
+			args: args{
+				s: "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+			},
+			wantYes: true,
+		},
+		{
+			name: "case7: not empty hash",
+			args: args{
+				s: "88fc1220feb81cea5697d4b27df536af95b73d17a107a345922e75e334614097",
+			},
+			wantYes: false,
+		},
+		{
+			name: "case8: invalid hash",
+			args: args{
+				s: "<3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+			},
+			wantYes: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotH := EmptyHash(tt.args.s); !reflect.DeepEqual(gotH, tt.wantYes) {
+				t.Errorf("EmptyHash(%s) = %v, want %v", tt.args.s, gotH, tt.wantYes)
+			}
+		})
 	}
 }
